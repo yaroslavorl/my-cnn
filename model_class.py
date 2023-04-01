@@ -5,7 +5,7 @@ import numpy as np
 class ModelCnn(object):
 
     def __init__(self):
-        self.layers_1 = Conv2D(1, kernel_size=3, input_size=5)
+        self.layers_1 = Conv2D(1, kernel_size=2, input_size=5)
 
     def predict(self, x):
         return self._relu(self.layers_1(x))
@@ -16,6 +16,7 @@ class ModelCnn(object):
 
 
 if __name__ == "__main__":
-    img = np.random.randint(0, 256, (5, 5))
+    img = np.random.randint(0, 256, (1, 5, 5))
     model = ModelCnn()
-    print(model.predict(img))
+    print(model.predict(img).shape)
+
