@@ -13,16 +13,10 @@ class Conv2D(object):
         return self._conv(x, self.input_size, self.kernel_size)
 
     def _conv(self, x, input_size, kernel_size):
-        scalar = 0
         output = np.zeros((input_size - kernel_size + 1, input_size - kernel_size + 1))
 
         for k in range(input_size - kernel_size + 1):
             for m in range(input_size - kernel_size + 1):
-                for i in range(kernel_size):
-                    for j in range(kernel_size):
-                        scalar += x[i + k][j + m] * self.weights[i][j]
-
-                output[k][m] = scalar
-                scalar = 0
+                output[k][m] = np.sum(x[k:kernel_size + k, m:kernel_size + m] * self.weights)
 
         return output
