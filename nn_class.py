@@ -9,7 +9,7 @@ class Conv2D(object):
         self.kernel_size = kernel_size
         self.input_size = input_size
 
-    def __call__(self, x, *args, **kwargs):
+    def __call__(self, x):
         return self._conv(x, self.input_size, self.kernel_size)
 
     def _conv(self, x, input_size, kernel_size):
@@ -23,15 +23,15 @@ class Conv2D(object):
 
 
 class Poling(object):
-    METHOD = {'max': np.max, 'min': np.min, 'avg': np.average}
+    _METHOD = {'max': np.max, 'min': np.min, 'avg': np.average}
 
     def __init__(self, input_size, input_channels, pool_size, method='max'):
         self.pool_size = pool_size
         self.input_size = input_size
         self.input_channels = input_channels
-        self.method = self.METHOD[method]
+        self.method = self._METHOD[method]
 
-    def __call__(self, x, *args, **kwargs):
+    def __call__(self, x):
         return self.poling(x)
 
     def poling(self, x):
@@ -43,3 +43,21 @@ class Poling(object):
                 for j, m in zip(range(0, self.input_size, self.pool_size), range(output_size)):
                     output[channel, k, m] = self.method(x[channel, i:self.pool_size + i, j:self.pool_size + j])
         return output
+
+
+class BatchNormalization(object):
+
+    def __init__(self, eps=1e5):
+        self.weights = np.array([1, 0])
+        self.eps = eps
+
+    def __call__(self, x):
+        return self.batch_norm(x)
+
+    def batch_norm(self, x):
+
+        m = np.mean(x)
+        disp = np.sum((x - m) ** 2) / m
+        x_new = (x - m)/(np.sqrt(disp + self.eps))
+
+        return x_new * self.weights[0] + self.weights[1]
